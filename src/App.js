@@ -1,8 +1,7 @@
 import React from "react";
 import ToDoItems from "./Components/ToDoItems";
-import Breadcrumb from "./Components/Breadcrumb";
+import FilterBar from "./Components/FilterBar";
 // import AddToDo from "./Components/AddToDo";
-
 // import todosData from "./Data/todosData";
 
 class App extends React.Component {
@@ -14,13 +13,14 @@ class App extends React.Component {
             filterMethod: 'all'
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.deleteHandler = this.deleteHandler.bind(this);
-        this.filteredList = this.filteredList.bind(this);
-        this.setFilterMethod = this.setFilterMethod.bind(this);
+        // this.handleChange = this.handleChange.bind(this);
+        // this.deleteHandler = this.deleteHandler.bind(this);
+        // this.setFilterMethod = this.setFilterMethod.bind(this);
+        // this.filteredList = this.filteredList.bind(this);
+
     }
     
-    handleChange(id) {
+    handleChange = id => {
         this.setState(prevState => {
             const updatedTodos = prevState.todos.map(todo => {
                 if (todo.id === id) {
@@ -34,7 +34,7 @@ class App extends React.Component {
         });
     }
 
-    deleteHandler(id) {
+    deleteHandler = id => {
       this.setState(() => {
         const remainingItems = this.state.todos
         .filter((todo) => {
@@ -48,15 +48,15 @@ class App extends React.Component {
       })
     }
 
-    setFilterMethod(method) {
-      this.setState(()=>{
+    setFilterMethod = method => {
+      this.setState(()=> {
         return {
           filterMethod: method
         }
       })
     }
 
-    filteredList(method) {
+    filteredList = method => {
       const methods = {
         all: (todo) => true,
         finished: (todo) => todo.completed,
@@ -65,50 +65,41 @@ class App extends React.Component {
       return this.state.todos.filter(methods[method]);
     }
 
-    swapItems = (srcItem, targetItem) => {
+    swapItems = (srcItemId, targetItemId) => { //no this binding in constructor necessary since arrow function
       let items = this.state.todos.slice();
       let srcIndex = -1;
       let targetIndex = -1;
   
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].id === srcItem.id) {
-          srcIndex = i;
-        }
-        if (items[i].id === targetItem.id) {
-          targetIndex = i;
-        }
-      }
+      items.map((todo, index) => {
+        if(todo.id === srcItemId) srcIndex = index
+        if(todo.id === targetItemId) targetIndex = index 
+      })
   
       if (srcIndex != -1 && targetIndex != -1) {
-        let { srcId, ...srcRest } = items[srcIndex];
-        let { targetId, ...targetRest } = items[targetIndex];
-        items[srcIndex] = { id: srcItem.id, ...targetRest };
-        items[targetIndex] = { id: targetItem.id, ...srcRest };
-  
+        let {...srcRest} = items[srcIndex]; //save attributes of src data before it is overwritten with target data
+        let {...targetRest} = items[targetIndex];
+        items[srcIndex] = {...targetRest}; //...targetRest means pass the rest of the attributes from the object - target overwrites position and data of src with own attributes
+        items[targetIndex] = {...srcRest};
+
         this.setState({ todos: items });
       }
     };
 
-    handleDragStart = data => event => {
-      let srcItem = JSON.stringify({ id: data.id });
-      event.dataTransfer.setData("dragContent", srcItem);
+    handleDragStart = srcItemId => event => { //arrow function inside arrow function makes acess to event possible
+      event.dataTransfer.setData("dragContent", srcItemId); //alternatively save as object { "id" : scrItemId}
     };
 
-    handleDragOver = data => event => {
+    handleDragOver = () => event => { 
       event.preventDefault();
       return false;
     };
 
-    handleDrop = data => event => {
+    handleDrop = targetItemId => event => {
       event.preventDefault();
-    
-      let srcItem = JSON.parse(event.dataTransfer.getData("dragContent"));
-      let targetItem = { id: data.id };
-    
-      this.swapItems(srcItem, targetItem);
+      let srcItemId = JSON.parse(event.dataTransfer.getData("dragContent")); //parse since getData retrieves content (a string) from the dragContent key - converts it to a number
+      this.swapItems(srcItemId, targetItemId);
       return false;
     };
-
 
     componentDidMount() {
       this.setState({
@@ -131,7 +122,7 @@ class App extends React.Component {
       let todoItems = this.filteredList(this.state.filterMethod)
       .map(item =>
         <ToDoItems 
-          key={item.id}
+          key={item.id} //returns new instance for every rendered component instead of just mutating already existing one (makes react treat every object individually)
           item={item} 
           handleChange={this.handleChange} 
           deleteHandler={this.deleteHandler} 
@@ -144,7 +135,7 @@ class App extends React.Component {
 
         return (
             <div className="todo-container">
-                <Breadcrumb setFilterMethod={this.setFilterMethod} />
+                <FilterBar setFilterMethod={this.setFilterMethod} />
                 {this.state.loading ? `Loading list...` : todoItems}
             </div>
         )

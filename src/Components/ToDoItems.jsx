@@ -3,9 +3,6 @@ import React from "react"
 function TodoItem(props) {
 
     const completedToDo = {
-        // background: '#f4f4f4',
-        // padding: '1em',
-        // borderBottom: '1px #ccc dotted',
         color: '#cdcdcd',
         textDecoration: 'line-through'
     }
@@ -14,9 +11,9 @@ function TodoItem(props) {
 
         <div className="todo-item"
           draggable={props.draggable}
-          onDragStart={props.onDragStart({ id: props.item.id })}
-          onDragOver={props.onDragOver({ id: props.item.id })}
-          onDrop={props.onDrop({ id: props.item.id })}
+          onDragStart={props.onDragStart(props.item.id)} //no arrow function!!
+          onDragOver={props.onDragOver()}
+          onDrop={props.onDrop(props.item.id)}
         >
           <div className="todo-choose">
             <label>

@@ -36,6 +36,10 @@ label {
     display: block;
 }
 
+label:hover {
+    cursor: pointer;
+}
+
 .todo-item {
     width: 85%;
     display:flex;
@@ -48,6 +52,7 @@ label {
 
 .todo-item:hover {
     background: #fdf6f6;
+    cursor: pointer;
 }
 
 .todo-choose {
@@ -66,4 +71,5 @@ label {
 
 .todo-delete button:hover {
     background: linear-gradient(to bottom right, #ff4d18 0%, #000066 100%);
+    cursor: pointer;
 }

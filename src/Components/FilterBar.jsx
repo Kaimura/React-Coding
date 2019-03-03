@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
 
-function Breadcrumb(props) {
+function FilterBar(props) {
 
     const Button = styled.button`
         border: none;
@@ -21,4 +21,4 @@ function Breadcrumb(props) {
   )
 }
 
-export default Breadcrumb;
+export default FilterBar;
