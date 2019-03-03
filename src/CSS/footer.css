@@ -1,0 +1,6 @@
+.Footer_footer {
+    display: flex;
+    justify-content: center;
+    background-color: dimgray;
+    color: aliceblue;
+}

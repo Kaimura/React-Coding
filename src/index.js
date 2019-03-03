@@ -1,8 +1,11 @@
-import React from 'react';
+/*jshint esversion: 6 */
+import React from 'react'; //interprets the jsx (->html syntax which actually is javascript)
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
