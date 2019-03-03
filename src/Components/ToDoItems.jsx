@@ -12,7 +12,12 @@ function TodoItem(props) {
 
     return (
 
-        <div className="todo-item">
+        <div className="todo-item"
+          draggable={props.draggable}
+          onDragStart={props.onDragStart({ id: props.item.id })}
+          onDragOver={props.onDragOver({ id: props.item.id })}
+          onDrop={props.onDrop({ id: props.item.id })}
+        >
           <div className="todo-choose">
             <label>
 

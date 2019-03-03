@@ -57,8 +57,7 @@ class App extends React.Component {
     }
 
     filteredList(method) {
-
-      if(method == 'finished') {
+      if(method === 'finished') {
           const finishedTasks = this.state.todos
           .filter((todo) => {
             if(todo.completed) {
@@ -68,7 +67,7 @@ class App extends React.Component {
           return finishedTasks
       }
 
-      if(method == 'remaining') {
+      if(method === 'remaining') {
           const remainingTasks = this.state.todos
           .filter((todo) => {
             if(!todo.completed) {
@@ -79,7 +78,52 @@ class App extends React.Component {
       }
 
     }
+
+    swapItems = (fromItem, toItem) => {
+      let items = this.state.todos.slice();
+      let fromIndex = -1;
+      let toIndex = -1;
+  
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].id === fromItem.id) {
+          fromIndex = i;
+        }
+        if (items[i].id === toItem.id) {
+          toIndex = i;
+        }
+      }
+  
+      if (fromIndex != -1 && toIndex != -1) {
+        let { fromId, ...fromRest } = items[fromIndex];
+        let { toId, ...toRest } = items[toIndex];
+        items[fromIndex] = { id: fromItem.id, ...toRest };
+        items[toIndex] = { id: toItem.id, ...fromRest };
+  
+        this.setState({ todos: items });
+      }
+    };
+
+    handleDragStart = data => event => {
+      let fromItem = JSON.stringify({ id: data.id });
+      event.dataTransfer.setData("dragContent", fromItem);
+    };
+
+    handleDragOver = data => event => {
+      event.preventDefault();
+      return false;
+    };
+
+    handleDrop = data => event => {
+      event.preventDefault();
     
+      let fromItem = JSON.parse(event.dataTransfer.getData("dragContent"));
+      let toItem = { id: data.id };
+    
+      this.swapItems(fromItem, toItem);
+      return false;
+    };
+
+
     componentDidMount() {
       this.setState({
         loading: true
@@ -101,14 +145,38 @@ class App extends React.Component {
       let todoItems;
 
       if(!this.state.filterMethod) { //filterMethod is null -> render all
-        todoItems = this.state.todos.map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
+        todoItems = this.state.todos
+        .map(item => 
+          <ToDoItems 
+            key={item.id} 
+            item={item} 
+            handleChange={this.handleChange} 
+            deleteHandler={this.deleteHandler} 
+            draggable="true"
+            onDragStart={this.handleDragStart}
+            onDragOver={this.handleDragOver}
+            onDrop={this.handleDrop}
+            />
+        );
       } else { //render filtered
-        todoItems = this.filteredList(this.state.filterMethod).map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
+        todoItems = this.filteredList(this.state.filterMethod)
+        .map(item => 
+          <ToDoItems 
+            key={item.id} 
+            item={item} 
+            handleChange={this.handleChange} 
+            deleteHandler={this.deleteHandler}
+            draggable="true"
+            onDragStart={this.handleDragStart}
+            onDragOver={this.handleDragOver}
+            onDrop={this.handleDrop}
+          />
+        );
       }
         return (
             <div className="todo-container">
                 <Breadcrumb setFilterMethod={this.setFilterMethod} />
-                {this.state.loading ? `Loading list` : todoItems}
+                {this.state.loading ? `Loading list...` : todoItems}
             </div>
         )
     }
