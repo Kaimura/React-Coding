@@ -27,7 +27,6 @@ function TodoItem(props) {
                       checked={props.item.completed} 
                       onChange={ () => props.handleChange(props.item.id)}
                   />
-
                   {props.item.title}
                 </p>
               </label>

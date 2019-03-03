@@ -46,6 +46,10 @@ label {
     margin-bottom: 1em;
 }
 
+.todo-item:hover {
+    background: #fdf6f6;
+}
+
 .todo-choose {
     flex:25;
 }
@@ -55,11 +59,11 @@ label {
 }
 
 .todo-delete button {
-    background: linear-gradient(to bottom right, #ff4d18 0%, #000066 100%);
+    background: #fd774f;
     border: none;
     border-radius: 50%;
 }
 
 .todo-delete button:hover {
-    background: #fd774f
+    background: linear-gradient(to bottom right, #ff4d18 0%, #000066 100%);
 }

@@ -11,7 +11,7 @@ class App extends React.Component {
         this.state = {
             loading: false,
             todos: [],
-            filterMethod: null
+            filterMethod: 'all'
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -48,7 +48,7 @@ class App extends React.Component {
       })
     }
 
-    setFilterMethod(method){
+    setFilterMethod(method) {
       this.setState(()=>{
         return {
           filterMethod: method
@@ -57,55 +57,41 @@ class App extends React.Component {
     }
 
     filteredList(method) {
-      if(method === 'finished') {
-          const finishedTasks = this.state.todos
-          .filter((todo) => {
-            if(todo.completed) {
-              return todo;
-            }
-          })
-          return finishedTasks
-      }
-
-      if(method === 'remaining') {
-          const remainingTasks = this.state.todos
-          .filter((todo) => {
-            if(!todo.completed) {
-              return todo;
-            }
-          })
-          return remainingTasks
-      }
-
+      const methods = {
+        all: (todo) => true,
+        finished: (todo) => todo.completed,
+        remaining: (todo) => !todo.completed,
+      };
+      return this.state.todos.filter(methods[method]);
     }
 
-    swapItems = (fromItem, toItem) => {
+    swapItems = (srcItem, targetItem) => {
       let items = this.state.todos.slice();
-      let fromIndex = -1;
-      let toIndex = -1;
+      let srcIndex = -1;
+      let targetIndex = -1;
   
       for (let i = 0; i < items.length; i++) {
-        if (items[i].id === fromItem.id) {
-          fromIndex = i;
+        if (items[i].id === srcItem.id) {
+          srcIndex = i;
         }
-        if (items[i].id === toItem.id) {
-          toIndex = i;
+        if (items[i].id === targetItem.id) {
+          targetIndex = i;
         }
       }
   
-      if (fromIndex != -1 && toIndex != -1) {
-        let { fromId, ...fromRest } = items[fromIndex];
-        let { toId, ...toRest } = items[toIndex];
-        items[fromIndex] = { id: fromItem.id, ...toRest };
-        items[toIndex] = { id: toItem.id, ...fromRest };
+      if (srcIndex != -1 && targetIndex != -1) {
+        let { srcId, ...srcRest } = items[srcIndex];
+        let { targetId, ...targetRest } = items[targetIndex];
+        items[srcIndex] = { id: srcItem.id, ...targetRest };
+        items[targetIndex] = { id: targetItem.id, ...srcRest };
   
         this.setState({ todos: items });
       }
     };
 
     handleDragStart = data => event => {
-      let fromItem = JSON.stringify({ id: data.id });
-      event.dataTransfer.setData("dragContent", fromItem);
+      let srcItem = JSON.stringify({ id: data.id });
+      event.dataTransfer.setData("dragContent", srcItem);
     };
 
     handleDragOver = data => event => {
@@ -116,10 +102,10 @@ class App extends React.Component {
     handleDrop = data => event => {
       event.preventDefault();
     
-      let fromItem = JSON.parse(event.dataTransfer.getData("dragContent"));
-      let toItem = { id: data.id };
+      let srcItem = JSON.parse(event.dataTransfer.getData("dragContent"));
+      let targetItem = { id: data.id };
     
-      this.swapItems(fromItem, toItem);
+      this.swapItems(srcItem, targetItem);
       return false;
     };
 
@@ -142,37 +128,20 @@ class App extends React.Component {
     }
 
     render() {
-      let todoItems;
-
-      if(!this.state.filterMethod) { //filterMethod is null -> render all
-        todoItems = this.state.todos
-        .map(item => 
-          <ToDoItems 
-            key={item.id} 
-            item={item} 
-            handleChange={this.handleChange} 
-            deleteHandler={this.deleteHandler} 
-            draggable="true"
-            onDragStart={this.handleDragStart}
-            onDragOver={this.handleDragOver}
-            onDrop={this.handleDrop}
-            />
-        );
-      } else { //render filtered
-        todoItems = this.filteredList(this.state.filterMethod)
-        .map(item => 
-          <ToDoItems 
-            key={item.id} 
-            item={item} 
-            handleChange={this.handleChange} 
-            deleteHandler={this.deleteHandler}
-            draggable="true"
-            onDragStart={this.handleDragStart}
-            onDragOver={this.handleDragOver}
-            onDrop={this.handleDrop}
+      let todoItems = this.filteredList(this.state.filterMethod)
+      .map(item =>
+        <ToDoItems 
+          key={item.id}
+          item={item} 
+          handleChange={this.handleChange} 
+          deleteHandler={this.deleteHandler} 
+          draggable="true"
+          onDragStart={this.handleDragStart}
+          onDragOver={this.handleDragOver}
+          onDrop={this.handleDrop}
           />
-        );
-      }
+      )
+
         return (
             <div className="todo-container">
                 <Breadcrumb setFilterMethod={this.setFilterMethod} />

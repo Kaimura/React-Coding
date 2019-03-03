@@ -7,13 +7,13 @@ function Breadcrumb(props) {
         border: none;
         margin: 5px 5px;
             &:hover {
-                background: #e5e5e5;
+                background: #fdf6f6;
             }
     `;
   
   return (
     <div>
-      <Button onClick={() => props.setFilterMethod()}>All</Button>
+      <Button onClick={() => props.setFilterMethod('all')}>All</Button>
       <Button onClick={() => props.setFilterMethod('finished')}>Finished</Button>
       <Button onClick={() => props.setFilterMethod('remaining')}>Remaining</Button>
     </div>
