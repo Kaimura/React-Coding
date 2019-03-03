@@ -3,11 +3,24 @@ import styled from 'styled-components';
 
 export class AddToDo extends Component {
 
-    state = {
-        title: ''
+    constructor() {
+        super();
+        
+        this.state = {
+            title: ''
+        }
+
+        this.onChange = this.onChange.bind(this);
     }
 
-    onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+
+    onChange(e){
+        this.setState(function() {
+            return {
+              title: e.target.value,
+            }
+        })
+    }
 
   render() {
     const Form = styled.form`
@@ -31,7 +44,7 @@ export class AddToDo extends Component {
 
     return (
         <Form>
-            <input type="text" name="title" placeholder="Add to do..." value={this.state.title} onChange={this.onChange} />
+            <input type="text" name="title" placeholder="Add to do..." value={this.state.title} onChange={this.onChange(e)} />
             <input type="submit" value="Add"/>
         </Form>
     )

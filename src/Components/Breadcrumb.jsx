@@ -10,12 +10,12 @@ function Breadcrumb(props) {
                 background: #e5e5e5;
             }
     `;
-
+  
   return (
     <div>
-      <Button onClick={() => props.filteredList('all')}>All</Button>
-      <Button onClick={() => props.filteredList('finished')}>Finished</Button>
-      <Button onClick={() => props.filteredList('remaining')}>Remaining</Button>
+      <Button onClick={() => props.setFilterMethod()}>All</Button>
+      <Button onClick={() => props.setFilterMethod('finished')}>Finished</Button>
+      <Button onClick={() => props.setFilterMethod('remaining')}>Remaining</Button>
     </div>
   )
 }

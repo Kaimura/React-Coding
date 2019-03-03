@@ -1,6 +1,8 @@
 import React from "react";
 import ToDoItems from "./Components/ToDoItems";
 import Breadcrumb from "./Components/Breadcrumb";
+// import AddToDo from "./Components/AddToDo";
+
 // import todosData from "./Data/todosData";
 
 class App extends React.Component {
@@ -9,13 +11,13 @@ class App extends React.Component {
         this.state = {
             loading: false,
             todos: [],
-            isFiltered: false,
-            filteredTodos: []
+            filterMethod: null
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.deleteHandler = this.deleteHandler.bind(this);
         this.filteredList = this.filteredList.bind(this);
+        this.setFilterMethod = this.setFilterMethod.bind(this);
     }
     
     handleChange(id) {
@@ -46,43 +48,34 @@ class App extends React.Component {
       })
     }
 
+    setFilterMethod(method){
+      this.setState(()=>{
+        return {
+          filterMethod: method
+        }
+      })
+    }
+
     filteredList(method) {
-      if(method == 'all') {
-        this.setState(() => {
-          return {
-            isFiltered: false,
-          }
-        })
-      }
 
       if(method == 'finished') {
-        this.setState(() => {
           const finishedTasks = this.state.todos
           .filter((todo) => {
             if(todo.completed) {
               return todo;
             }
           })
-          return {
-            isFiltered: true,
-            filteredTodos: finishedTasks
-          }
-        })
+          return finishedTasks
       }
 
       if(method == 'remaining') {
-        this.setState(() => {
           const remainingTasks = this.state.todos
           .filter((todo) => {
             if(!todo.completed) {
               return todo;
             }
           })
-          return {
-            isFiltered: true,
-            filteredTodos: remainingTasks
-          }
-        })
+          return remainingTasks
       }
 
     }
@@ -106,15 +99,15 @@ class App extends React.Component {
 
     render() {
       let todoItems;
-      if(this.state.isFiltered) {
-         todoItems = this.state.filteredTodos.map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
-      } else {
-         todoItems = this.state.todos.map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
-      }
 
+      if(!this.state.filterMethod) { //filterMethod is null -> render all
+        todoItems = this.state.todos.map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
+      } else { //render filtered
+        todoItems = this.filteredList(this.state.filterMethod).map(item => <ToDoItems key={item.id} item={item} handleChange={this.handleChange} deleteHandler={this.deleteHandler}/>);
+      }
         return (
             <div className="todo-container">
-                <Breadcrumb filteredList={this.filteredList}/>
+                <Breadcrumb setFilterMethod={this.setFilterMethod} />
                 {this.state.loading ? `Loading list` : todoItems}
             </div>
         )
