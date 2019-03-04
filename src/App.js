@@ -1,25 +1,20 @@
 import React from "react";
 import ToDoItems from "./Components/ToDoItems";
 import FilterBar from "./Components/FilterBar";
-// import AddToDo from "./Components/AddToDo";
+import AddToDo from "./Components/AddToDo";
 // import todosData from "./Data/todosData";
 
 class App extends React.Component {
     constructor() {
         super();
         this.state = {
+            counter: 8,
             loading: false,
             todos: [],
             filterMethod: 'all'
         };
-
-        // this.handleChange = this.handleChange.bind(this);
-        // this.deleteHandler = this.deleteHandler.bind(this);
-        // this.setFilterMethod = this.setFilterMethod.bind(this);
-        // this.filteredList = this.filteredList.bind(this);
-
     }
-    
+
     handleChange = id => {
         this.setState(prevState => {
             const updatedTodos = prevState.todos.map(todo => {
@@ -59,13 +54,13 @@ class App extends React.Component {
     filteredList = method => {
       const methods = {
         all: (todo) => true,
-        finished: (todo) => todo.completed,
+        finished: (todo) => todo.completed, //(todo) only works since it is called via this.state.todos
         remaining: (todo) => !todo.completed,
       };
       return this.state.todos.filter(methods[method]);
     }
 
-    swapItems = (srcItemId, targetItemId) => { //no this binding in constructor necessary since arrow function
+    swapItems = (srcItemId, targetItemId) => { //no 'this' binding in constructor necessary since arrow function
       let items = this.state.todos.slice();
       let srcIndex = -1;
       let targetIndex = -1;
@@ -76,7 +71,7 @@ class App extends React.Component {
       })
   
       if (srcIndex != -1 && targetIndex != -1) {
-        let {...srcRest} = items[srcIndex]; //save attributes of src data before it is overwritten with target data
+        let {...srcRest} = items[srcIndex]; //save attributes of src data at position srcIndex before it is overwritten with target data
         let {...targetRest} = items[targetIndex];
         items[srcIndex] = {...targetRest}; //...targetRest means pass the rest of the attributes from the object - target overwrites position and data of src with own attributes
         items[targetIndex] = {...srcRest};
@@ -85,11 +80,11 @@ class App extends React.Component {
       }
     };
 
-    handleDragStart = srcItemId => event => { //arrow function inside arrow function makes acess to event possible
+    handleDragStart = srcItemId => event => { //arrow function inside arrow function makes acess to event possible (when event needs to be acessed in direct parent component)
       event.dataTransfer.setData("dragContent", srcItemId); //alternatively save as object { "id" : scrItemId}
     };
 
-    handleDragOver = () => event => { 
+    handleDragOver = () => event => {
       event.preventDefault();
       return false;
     };
@@ -101,18 +96,58 @@ class App extends React.Component {
       return false;
     };
 
+    addItem = title => {
+
+      // fetch('https://jsonplaceholder.typicode.com/todos', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Accept': 'application/json, text/plain, */*',
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     userId: 1,
+      //     id: this.state.counter + 1,
+      //     title: title,
+      //     completed: false
+      //   })
+      // })
+      // .then(response => response.json())
+      // .then(response => {
+      //   console.log(JSON.stringify(response));
+      //   this.setState(()=> {
+      //     return {
+      //       todos: [...this.state.todos, response] // ',' means add this to the already spreaded array
+      //     }
+      //   })
+      // })
+
+      const newTodo = {
+        userId: 1,
+        id: this.state.counter + 1,
+        title: title,
+        completed: false
+      }
+
+      this.setState(()=> {
+        return {
+          counter: this.state.counter + 1,
+          todos: [...this.state.todos, newTodo] // ',' means add this to the already spreaded array
+        }
+      })
+    }
+
     componentDidMount() {
       this.setState({
         loading: true
       });
   
-      fetch('https://jsonplaceholder.typicode.com/todos?_limit=8')
+      fetch('https://jsonplaceholder.typicode.com/todos?_limit='+ this.state.counter)
       .then(response => response.json())
-      .then(data => {
+      .then(response => {
         this.setState( () => {
           return {
             loading: false,
-            todos: data
+            todos: response
           }
         })
       })
@@ -135,8 +170,9 @@ class App extends React.Component {
 
         return (
             <div className="todo-container">
-                <FilterBar setFilterMethod={this.setFilterMethod} />
-                {this.state.loading ? `Loading list...` : todoItems}
+              <FilterBar setFilterMethod={this.setFilterMethod} />
+              <AddToDo addItem={this.addItem}/>
+              {this.state.loading ? `Loading list...` : todoItems}
             </div>
         )
     }

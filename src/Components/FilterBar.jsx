@@ -5,7 +5,7 @@ function FilterBar(props) {
 
     const Button = styled.button`
         border: none;
-        margin: 10px 5px;
+        margin: 2em 5px;
             &:hover {
                 background: #fdf6f6;
                 cursor: pointer;

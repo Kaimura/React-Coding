@@ -11,7 +11,7 @@ function TodoItem(props) {
 
         <div className="todo-item"
           draggable={props.draggable}
-          onDragStart={props.onDragStart(props.item.id)} //no arrow function!!
+          onDragStart={props.onDragStart(props.item.id)} //no arrow functions
           onDragOver={props.onDragOver()}
           onDrop={props.onDrop(props.item.id)}
         >

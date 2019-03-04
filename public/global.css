@@ -7,6 +7,29 @@ body {
     background-color: whitesmoke;
 }
 
+form {
+    width: 85%;
+    display: flex;
+    margin-bottom: 1em;
+}
+
+form input[type=text]{
+    flex:3
+}
+
+form input[type=submit]{
+    flex: 1;
+    background: #444;
+    border: none;
+    color: #fff;
+    padding: 0.4em 0;
+}
+
+form input[type=submit]:hover {
+    background: #888;
+    cursor: pointer;
+}
+
 p {
     display: inline-block;
 }
@@ -45,13 +68,13 @@ label:hover {
     display:flex;
     align-items: center;
     background: #e0e0e075;
-    /* background: linear-gradient(to bottom right, #33cccc 0%, #000066 100%); */
     border-bottom: 1px dashed #484444;
     margin-bottom: 1em;
 }
 
 .todo-item:hover {
     background: #fdf6f6;
+    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
@@ -67,9 +90,13 @@ label:hover {
     background: #fd774f;
     border: none;
     border-radius: 50%;
+    font-size: 1.5em;
 }
 
 .todo-delete button:hover {
     background: linear-gradient(to bottom right, #ff4d18 0%, #000066 100%);
     cursor: pointer;
+}
+.todo-delete button:focus {
+    outline: 0;
 }
