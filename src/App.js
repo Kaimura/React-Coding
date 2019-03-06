@@ -98,22 +98,27 @@ class App extends React.Component {
 
     addItem = title => {
 
+      if(!title) {
+        alert("Please enter text");
+        return;
+      }
+
       // fetch('https://jsonplaceholder.typicode.com/todos', {
       //   method: 'POST',
       //   headers: {
-      //     'Accept': 'application/json, text/plain, */*',
-      //     'Content-Type': 'application/json'
+      //       'Accept': 'application/json',
+      //       'Content-Type': 'application/json'
       //   },
       //   body: JSON.stringify({
       //     userId: 1,
-      //     id: this.state.counter + 1,
+      //     // id: this.state.counter + 1, //id always 201??? same as status number.. Also not incrementing..
       //     title: title,
       //     completed: false
       //   })
       // })
       // .then(response => response.json())
       // .then(response => {
-      //   console.log(JSON.stringify(response));
+      //   console.log(response);
       //   this.setState(()=> {
       //     return {
       //       todos: [...this.state.todos, response] // ',' means add this to the already spreaded array
@@ -134,6 +139,7 @@ class App extends React.Component {
           todos: [...this.state.todos, newTodo] // ',' means add this to the already spreaded array
         }
       })
+
     }
 
     componentDidMount() {
@@ -170,7 +176,7 @@ class App extends React.Component {
 
         return (
             <div className="todo-container">
-              <FilterBar setFilterMethod={this.setFilterMethod} />
+              <FilterBar setFilterMethod={this.setFilterMethod} method={this.state.filterMethod} />
               <AddToDo addItem={this.addItem}/>
               {this.state.loading ? `Loading list...` : todoItems}
             </div>

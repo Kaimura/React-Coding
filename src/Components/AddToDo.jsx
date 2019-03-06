@@ -30,12 +30,14 @@ class AddToDo extends React.Component {
     // `;
 
     updateValue = event => {
-        this.setState({[event.target.name]: event.target.value});
+        const {name, value} = event.target;
+        this.setState({[name]: value})
     }
 
     handleSubmit = event => {
         event.preventDefault();
         this.props.addItem(this.state.title);
+
         this.setState({ title: '' });
     }
 

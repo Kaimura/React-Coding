@@ -12,11 +12,15 @@ function FilterBar(props) {
             }
     `;
   
+    const active = {
+      backgroundColor: "rgba(117, 113, 113, 0.85)"
+    };
+
   return (
     <div>
-      <Button onClick={() => props.setFilterMethod('all')}>All</Button>
-      <Button onClick={() => props.setFilterMethod('finished')}>Finished</Button>
-      <Button onClick={() => props.setFilterMethod('remaining')}>Remaining</Button>
+      <Button style={props.method == 'all' ? active : null} onClick={() => props.setFilterMethod('all')}>All</Button>
+      <Button style={props.method == 'finished' ? active : null} onClick={() => props.setFilterMethod('finished')}>Finished</Button>
+      <Button style={props.method == 'remaining' ? active : null} onClick={() => props.setFilterMethod('remaining')}>Remaining</Button>
     </div>
   )
 }
