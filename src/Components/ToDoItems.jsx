@@ -18,14 +18,14 @@ function TodoItem(props) {
           <div className="todo-choose">
             <label>
 
-                <p style = {props.item.completed ? completedToDo : null}>
+                <li style = {props.item.completed ? completedToDo : null}>
                   <input
                       type="checkbox" 
                       checked={props.item.completed} 
                       onChange={ () => props.handleChange(props.item.id)}
                   />
                   {props.item.title}
-                </p>
+                </li>
               </label>
             </div>
             <div className="todo-delete">

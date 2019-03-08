@@ -178,7 +178,9 @@ class App extends React.Component {
             <div className="todo-container">
               <FilterBar setFilterMethod={this.setFilterMethod} method={this.state.filterMethod} />
               <AddToDo addItem={this.addItem}/>
-              {this.state.loading ? `Loading list...` : todoItems}
+              <ol>
+                {this.state.loading ? `Loading list...` : todoItems}
+              </ol>
             </div>
         )
     }

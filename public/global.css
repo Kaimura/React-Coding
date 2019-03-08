@@ -34,6 +34,13 @@ p {
     display: inline-block;
 }
 
+ol {
+    width: 85%;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
 .todo-container {
     display: flex;
     flex-direction: column;
