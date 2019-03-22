@@ -11,9 +11,9 @@ function TodoItem(props) {
 
         <div className="todo-item"
           draggable={props.draggable}
-          onDragStart={props.onDragStart(props.item.id)} //no arrow functions
-          onDragOver={props.onDragOver()}
-          onDrop={props.onDrop(props.item.id)}
+          onDragStart={(event) => props.onDragStart(props.item.id, event)}
+          onDragOver={(event) => props.onDragOver(event)}
+          onDrop={(event) => props.onDrop(props.item.id, event)}
         >
           <div className="todo-choose">
             <label>
@@ -21,7 +21,7 @@ function TodoItem(props) {
                 <li style = {props.item.completed ? completedToDo : null}>
                   <input
                       type="checkbox" 
-                      checked={props.item.completed} 
+                      checked={props.item.completed}
                       onChange={ () => props.handleChange(props.item.id)}
                   />
                   {props.item.title}

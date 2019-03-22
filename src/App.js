@@ -2,7 +2,6 @@ import React from "react";
 import ToDoItems from "./Components/ToDoItems";
 import FilterBar from "./Components/FilterBar";
 import AddToDo from "./Components/AddToDo";
-// import todosData from "./Data/todosData";
 
 class App extends React.Component {
     constructor() {
@@ -15,43 +14,33 @@ class App extends React.Component {
         };
     }
 
-    handleChange = id => {
-        this.setState(prevState => {
-            const updatedTodos = prevState.todos.map(todo => {
-                if (todo.id === id) {
-                    todo.completed = !todo.completed;
-                }
-                return todo;
-            });
-            return {
-                todos: updatedTodos
-            };
-        });
+    handleChange(id) {
+      this.setState(prevState => ({
+          todos: prevState.todos.map(todo => {
+              if (todo.id === id) {
+                  todo.completed = !todo.completed;
+              }
+              return todo;
+          })
+      }))
     }
 
-    deleteHandler = id => {
-      this.setState(() => {
-        const remainingItems = this.state.todos
+    deleteHandler(id) {
+      this.setState((prevState) => ({
+        todos: prevState.todos
         .filter((todo) => {
           if(todo.id !== id) {
             return todo;
           }
         })
-        return {
-          todos: remainingItems
-        }
-      })
+      }))
     }
 
-    setFilterMethod = method => {
-      this.setState(()=> {
-        return {
-          filterMethod: method
-        }
-      })
+    setFilterMethod(method) {
+      this.setState({ filterMethod: method })
     }
 
-    filteredList = method => {
+    filteredList(method) {
       const methods = {
         all: (todo) => true,
         finished: (todo) => todo.completed, //(todo) only works since it is called via this.state.todos
@@ -60,7 +49,7 @@ class App extends React.Component {
       return this.state.todos.filter(methods[method]);
     }
 
-    swapItems = (srcItemId, targetItemId) => { //no 'this' binding in constructor necessary since arrow function
+    swapItems(srcItemId, targetItemId) {
       let items = this.state.todos.slice();
       let srcIndex = -1;
       let targetIndex = -1;
@@ -80,23 +69,23 @@ class App extends React.Component {
       }
     };
 
-    handleDragStart = srcItemId => event => { //arrow function inside arrow function makes acess to event possible (when event needs to be acessed in direct parent component)
+    handleDragStart(srcItemId, event) {
       event.dataTransfer.setData("dragContent", srcItemId); //alternatively save as object { "id" : scrItemId}
     };
 
-    handleDragOver = () => event => {
+    handleDragOver(event) {
       event.preventDefault();
       return false;
     };
 
-    handleDrop = targetItemId => event => {
+    handleDrop(targetItemId,event) {
       event.preventDefault();
       let srcItemId = JSON.parse(event.dataTransfer.getData("dragContent")); //parse since getData retrieves content (a string) from the dragContent key - converts it to a number
       this.swapItems(srcItemId, targetItemId);
       return false;
     };
 
-    addItem = title => {
+    addItem(title) {
 
       if(!title) {
         alert("Please enter text");
@@ -133,11 +122,9 @@ class App extends React.Component {
         completed: false
       }
 
-      this.setState(()=> {
-        return {
+      this.setState({
           counter: this.state.counter + 1,
           todos: [...this.state.todos, newTodo] // ',' means add this to the already spreaded array
-        }
       })
 
     }
@@ -165,19 +152,19 @@ class App extends React.Component {
         <ToDoItems 
           key={item.id} //returns new instance for every rendered component instead of just mutating already existing one (makes react treat every object individually)
           item={item} 
-          handleChange={this.handleChange} 
-          deleteHandler={this.deleteHandler} 
+          handleChange={(id) => this.handleChange(id)}
+          deleteHandler={(id) => this.deleteHandler(id)} 
           draggable="true"
-          onDragStart={this.handleDragStart}
-          onDragOver={this.handleDragOver}
-          onDrop={this.handleDrop}
+          onDragStart={(id, event) => this.handleDragStart(id, event)}
+          onDragOver={(event) => this.handleDragOver(event)}
+          onDrop={(id, event) => this.handleDrop(id, event)}
           />
       )
 
         return (
             <div className="todo-container">
-              <FilterBar setFilterMethod={this.setFilterMethod} method={this.state.filterMethod} />
-              <AddToDo addItem={this.addItem}/>
+              <FilterBar setFilterMethod={(method) => this.setFilterMethod(method)} method={this.state.filterMethod} />
+              <AddToDo addItem={(title) => this.addItem(title)}/>
               <ol>
                 {this.state.loading ? `Loading list...` : todoItems}
               </ol>

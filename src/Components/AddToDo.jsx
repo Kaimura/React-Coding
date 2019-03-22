@@ -29,12 +29,12 @@ class AddToDo extends React.Component {
     //         }
     // `;
 
-    updateValue = event => {
+    updateValue(event) {
         const {name, value} = event.target;
         this.setState({[name]: value})
     }
 
-    handleSubmit = event => {
+    handleSubmit(event) {
         event.preventDefault();
         this.props.addItem(this.state.title);
 
@@ -43,8 +43,8 @@ class AddToDo extends React.Component {
 
   render() {
     return (
-        <form onSubmit={this.handleSubmit} >
-            <input type="text" name="title" placeholder="Add to do..." onChange={this.updateValue} value={this.state.title} />
+        <form onSubmit={(event) => this.handleSubmit(event)} >
+            <input type="text" name="title" placeholder="Add to do..." onChange={(event) => this.updateValue(event)} value={this.state.title} />
             <input type="submit" value="Add"/>
         </form>
     )
